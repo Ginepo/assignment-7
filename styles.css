@@ -88,3 +88,11 @@ body {
 .task-completed .task-title {
     text-decoration: line-through;
 }
+.completed {
+  text-decoration: line-through;
+  background-color: lightgreen;
+}
+
+.overdue {
+  background-color: lightcoral;
+}

@@ -48,3 +48,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // TODO
 });
+
+function addTask() {
+  const name = document.getElementById("taskName").value;
+  const date = document.getElementById("dueDate").value;
+  const person = document.getElementById("assignedTo").value;
+
+  const task = document.createElement("div");
+
+  task.innerHTML = `
+    <h3>${name}</h3>
+    <p>Due: ${date}</p>
+    <p>Assigned to: ${person}</p>
+    <button onclick="this.parentElement.classList.toggle('completed')">
+      Complete
+    </button>
+  `;
+
+  document.getElementById("taskList").appendChild(task);
+}
