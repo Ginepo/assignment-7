@@ -1,69 +1,97 @@
-// TaskFlow - Team Task Management System
-// Starter code for the Chaos Exercise
-
-// Sample task data to show the structure
 let tasks = [
     {
         id: 1,
         title: "Sample Task",
         description: "This is what a task looks like",
         dueDate: "2025-10-15",
-        assignedTo: "",
+        assignedTo: "Michael",
         completed: false
     }
 ];
 
-// Function to render all tasks to the page
 function renderTasks() {
-    const taskList = document.getElementById('taskList');
-    taskList.innerHTML = '';
+    const taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
 
     tasks.forEach(task => {
-        const taskItem = document.createElement('div');
-        taskItem.className = 'card task-item';
-        
+        const taskItem = document.createElement("div");
+        taskItem.className = "card task-item";
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if (task.dueDate < today && !task.completed) {
+            taskItem.classList.add("overdue");
+        }
+
+        if (task.completed) {
+            taskItem.classList.add("task-completed");
+        }
+
         taskItem.innerHTML = `
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="task-content">
+                <div class="d-flex justify-content-between">
+                    <div>
                         <div class="task-title">${task.title}</div>
-                        <div class="task-description">${task.description}</div>
+                        <div>${task.description}</div>
                         <div class="task-date">Due: ${task.dueDate}</div>
-                        ${task.assignedTo ? `<div class="task-date">Assigned to: ${task.assignedTo}</div>` : ''}
+                        <div class="task-date">Assigned to: ${task.assignedTo}</div>
                     </div>
-                    <div class="task-actions">
-                        <!-- TODO -->
+
+                    <div>
+                        <button class="btn btn-success btn-sm"
+                            onclick="completeTask(${task.id})">
+                            Complete
+                        </button>
+
+                        <button class="btn btn-danger btn-sm"
+                            onclick="removeTask(${task.id})">
+                            Remove
+                        </button>
                     </div>
                 </div>
             </div>
         `;
-        
+
         taskList.appendChild(taskItem);
     });
 }
 
-// Initialize the app when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    renderTasks();
-    
-    // TODO
-});
-
 function addTask() {
-  const name = document.getElementById("taskName").value;
-  const date = document.getElementById("dueDate").value;
-  const person = document.getElementById("assignedTo").value;
+    const name = document.getElementById("taskName").value;
+    const description = document.getElementById("taskDescription").value;
+    const date = document.getElementById("dueDate").value;
+    const person = document.getElementById("assignedTo").value;
 
-  const task = document.createElement("div");
+    if (name === "" || date === "") {
+        alert("Please enter a task name and due date.");
+        return;
+    }
 
-  task.innerHTML = `
-    <h3>${name}</h3>
-    <p>Due: ${date}</p>
-    <p>Assigned to: ${person}</p>
-    <button onclick="this.parentElement.classList.toggle('completed')">
-      Complete
-    </button>
-  `;
+    tasks.push({
+        id: Date.now(),
+        title: name,
+        description: description,
+        dueDate: date,
+        assignedTo: person,
+        completed: false
+    });
 
-  document.getElementById("taskList").appendChild(task);
+    document.getElementById("taskName").value = "";
+    document.getElementById("taskDescription").value = "";
+    document.getElementById("dueDate").value = "";
+
+    renderTasks();
 }
+
+function completeTask(id) {
+    const task = tasks.find(task => task.id === id);
+    task.completed = true;
+    renderTasks();
+}
+
+function removeTask(id) {
+    tasks = tasks.filter(task => task.id !== id);
+    renderTasks();
+}
+
+renderTasks();
